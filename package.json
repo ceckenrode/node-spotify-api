@@ -1,0 +1,15 @@
+{
+  "name": "node-spotify-api",
+  "version": "1.0.0",
+  "description": "A simple wrapper for the spotify api",
+  "main": "index.js",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "author": "Christian Eckenrode <christian@develop.io>",
+  "license": "ISC",
+  "dependencies": {
+    "request": "^2.81.0",
+    "request-promise": "^4.2.1"
+  }
+}
