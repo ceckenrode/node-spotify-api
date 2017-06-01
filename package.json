@@ -1,6 +1,6 @@
 {
   "name": "node-spotify-api",
-  "version": "1.0.1",
+  "version": "1.0.2",
   "description": "A simple wrapper for the spotify api",
   "main": "index.js",
   "scripts": {

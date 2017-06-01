@@ -107,7 +107,8 @@ class Spotify {
             search.query +
             "&limit=" +
             (search.limit || "20"),
-          headers: this.getTokenHeader()
+          headers: this.getTokenHeader(),
+          json: true
         };
         return rp(opts);
       });
@@ -120,7 +121,8 @@ class Spotify {
           search.query +
           "&limit=" +
           (search.limit || "20"),
-        headers: this.getTokenHeader()
+        headers: this.getTokenHeader(),
+        json: true
       };
       request = rp(opts);
     }
