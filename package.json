@@ -1,7 +1,11 @@
 {
   "name": "node-spotify-api",
-  "version": "1.0.2",
+  "version": "1.0.3",
   "description": "A simple wrapper for the spotify api",
+  "repository": {
+    "type": "git",
+    "url": "https://github.com/ceckenrode/node-spotify-api.git"
+  },
   "main": "index.js",
   "scripts": {
     "test": "echo \"Error: no test specified\" && exit 1"
