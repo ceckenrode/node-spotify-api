@@ -9,14 +9,10 @@ const SEARCH_URI = "https://api.spotify.com/v1/search?type=";
  * @typedef {Object} Credentials
  * @property {string} id - A Spotify client id.
  * @property {string} secret - A Spotify client secret.
- */
-/**
  * @type {Error} 
  * @type {Response}
- * @type {Promise<object>}
  * @type {Void}
  */
-
 /**
  * Spotify class.
  * @class Spotify
@@ -31,89 +27,24 @@ class Spotify {
         'Could not initialize Spotify client. You must supply an object containing your Spotify client "id" and "secret".'
       );
     }
-    this.credentials = {
+
+    const _credentials = {
       id: credentials.id,
       secret: credentials.secret
     };
-    this.getCredentialHeader = this.getCredentialHeader.bind(this);
-    this.getTokenHeader = this.getTokenHeader.bind(this);
-    this.setToken = this.setToken.bind(this);
-    this.search = this.search.bind(this);
-  }
-  
-  getCredentialHeader() {
-    return {
-      Authorization: "Basic " +
-        new Buffer(
-          this.credentials.id + ":" + this.credentials.secret
-        ).toString("base64")
-    };
-  }
 
-  getTokenHeader() {
-    if (!this.token || !this.token.access_token) {
-      throw new Error(
-        "An error has occurred. Make sure you're using a valid client id and secret.'"
-      );
-    }
-    return { Authorization: "Bearer " + this.token.access_token };
-  }
+    let _token;
 
-  setToken() {
-    const opts = {
-      method: "POST",
-      uri: TOKEN_URI,
-      form: {
-        grant_type: "client_credentials"
-      },
-      headers: this.getCredentialHeader()
-    };
-
-    return rp(opts).then(token => {
-      this.token = JSON.parse(token);
-      const currentTime = new Date();
-      const expireTime = new Date(currentTime);
-      return (this.token.expires_at =
-        expireTime / 1000 + this.token.expires_in);
-    });
-  }
-  
-  isTokenExpired() {
-    if (Date.now() / 1000 >= this.token.expires_at - 300) {
-      return true;
-    }
-  }
-
-  /**
+    /**
    * @param {Search} search search - An object describing what should be searched for.
    * @param {function(Error, Response)=} cb cb - A callback function to be executed once the search is completed. Accepts an error and response parameter. If no callback function is provided, search will return a promise.
-   * @return {Promise<object> | Void}
+   * @return {Promise<any> | Void}
    * 
    * @memberof Spotify
    */
-  search(search, cb) {
-    let opts = {};
-    let request;
-    if (!search || !search.type || !search.query) {
-      throw new Error("You must specify a type and query for your search.");
-    }
-    if (!this.token || this.isTokenExpired()) {
-      request = this.setToken().then(() => {
-        opts = {
-          method: "GET",
-          uri: SEARCH_URI +
-            search.type +
-            "&q=" +
-            search.query +
-            "&limit=" +
-            (search.limit || "20"),
-          headers: this.getTokenHeader(),
-          json: true
-        };
-        return rp(opts);
-      });
-    } else {
-      opts = {
+    this.search = function(search, cb) {
+      let request;
+      const opts = {
         method: "GET",
         uri: SEARCH_URI +
           search.type +
@@ -121,15 +52,94 @@ class Spotify {
           search.query +
           "&limit=" +
           (search.limit || "20"),
-        headers: this.getTokenHeader(),
         json: true
       };
-      request = rp(opts);
+
+      if (!search || !search.type || !search.query) {
+        throw new Error("You must specify a type and query for your search.");
+      }
+
+      if (
+        !_token ||
+        !_token.expires_in ||
+        !_token.access_token ||
+        isTokenExpired()
+      ) {
+        request = _setToken().then(() => {
+          opts.headers = _getTokenHeader();
+          return rp(opts);
+        });
+      } else {
+        opts.headers = _getTokenHeader();
+        request = rp(opts);
+      }
+
+      if (cb) {
+        request
+          .then(response => cb(null, response))
+          .catch(err => cb(err, null));
+      } else {
+        return request;
+      }
+    };
+
+    /**
+     * Checks to see if the token is expired or about to expire.
+     * @returns {boolean}
+     */
+    function _isTokenExpired() {
+      if (Date.now() / 1000 >= _token.expires_at - 300) {
+        return true;
+      }
     }
-    if (cb) {
-      request.then(response => cb(null, response)).catch(err => cb(err, null));
-    } else {
-      return request;
+
+    /**
+     * Gets and sets an authorization token using the client id and secret
+     * @returns {Promise<any>} token
+     */
+    function _setToken() {
+      const opts = {
+        method: "POST",
+        uri: TOKEN_URI,
+        form: {
+          grant_type: "client_credentials"
+        },
+        headers: _getCredentialHeader(),
+        json: true
+      };
+      return rp(opts).then(token => {
+        _token = token;
+        const currentTime = new Date();
+        const expireTime = new Date(currentTime);
+        return (_token.expires_at = expireTime / 1000 + _token.expires_in);
+      });
+    }
+
+    /**
+     * Returns a formatted token header
+     * @returns {Object}
+     */
+    function _getTokenHeader() {
+      if (!_token || !_token.access_token) {
+        throw new Error(
+          "An error has occurred. Make sure you're using a valid client id and secret.'"
+        );
+      }
+      return { Authorization: "Bearer " + _token.access_token };
+    }
+
+    /**
+     * 
+     * 
+     * @returns {string}
+     */
+    function _getCredentialHeader() {
+      return {
+        Authorization: "Basic " +
+          new Buffer(_credentials.id + ":" + _credentials.secret).toString(
+            "base64"
+          )
+      };
     }
   }
 }
