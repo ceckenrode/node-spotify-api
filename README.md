@@ -59,6 +59,8 @@ spotify
 
 ### Don't have a Spotify client id and client secret?
 
+**Note:** If you're reading this from npmjs.com, continue reading this section at the [Github Repo](https://github.com/ceckenrode/node-spotify-api), since npm doesn't allow for uploading images.
+
 The Spotify API requires an authentication token to work. This package will perform all of the work of generating an authentication token for you, but you will still need to supply a client id and client secret.
 
 Sign up for a Spotify developer account [here](https://developer.spotify.com/my-applications/#!/login). If you already have a Spotify account, you'll just have to log in. A membership can be paid or free, it makes no difference when it comes to using the Spotify API.
