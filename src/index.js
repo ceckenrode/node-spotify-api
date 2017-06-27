@@ -1,6 +1,7 @@
 const rp = require("request-promise");
 const TOKEN_URI = "https://accounts.spotify.com/api/token";
-const SEARCH_URI = "https://api.spotify.com/v1/search?type=";
+const API_URI = "https://api.spotify.com/v1/";
+const SEARCH_URI = API_URI + "search?";
 
 /**
  * @typedef {Object} Search
@@ -36,34 +37,52 @@ class Spotify {
     let _token;
 
     /**
-   * @param {Search} search search - An object describing what should be searched for.
-   * @param {function(Error, Response)=} cb cb - A callback function to be executed once the search is completed. Accepts an error and response parameter. If no callback function is provided, search will return a promise.
-   * @return {Promise<any> | Void}
-   * 
-   * @memberof Spotify
-   */
+     * @param {Search} search search - An object describing what should be searched for.
+     * @param {function(Error, Response)=} cb cb - A callback function to be executed once the search is completed. Accepts an error and response parameter. If no callback function is provided, search will return a promise.
+     * @return {Promise<any> | Void}
+     * 
+     * @memberof Spotify
+     */
     this.search = function(search, cb) {
-      let request;
-      const opts = {
-        method: "GET",
-        uri: SEARCH_URI +
-          search.type +
-          "&q=" +
-          search.query +
-          "&limit=" +
-          (search.limit || "20"),
-        json: true
-      };
+
+      const uri = SEARCH_URI +
+          "type=" + search.type +
+          "&q=" + search.query +
+          "&limit=" + (search.limit || "20");
 
       if (!search || !search.type || !search.query) {
         throw new Error("You must specify a type and query for your search.");
       }
-
+      
+      return this.request(uri, cb)
+    }
+    
+    /**
+     * @param {Request}
+     * @param opts opts - An object with a URI for the Spotify API
+     * @param {function(Error, Response)=} cb cb - A callback function to be executed once the search is completed. Accepts an error and response parameter. If no callback function is provided, search will return a promise.
+     * @return {Promise<any> | Void}
+     * 
+     * @memberof Spotify
+     */
+    
+    this.request = function(uri, cb) {
+      
+      
+      let request;
+      const opts = {
+        method: "GET",
+        json: true,
+        uri: uri
+      };
+      
+      if ( !uri ) { throw new Error('You must have a URI for a request'); }
+      
       if (
         !_token ||
         !_token.expires_in ||
         !_token.access_token ||
-        isTokenExpired()
+        _isTokenExpired()
       ) {
         request = _setToken().then(() => {
           opts.headers = _getTokenHeader();
@@ -88,9 +107,7 @@ class Spotify {
      * @returns {boolean}
      */
     function _isTokenExpired() {
-      if (Date.now() / 1000 >= _token.expires_at - 300) {
-        return true;
-      }
+      return ( Date.now() / 1000 >= _token.expires_at - 300 );
     }
 
     /**
