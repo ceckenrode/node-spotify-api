@@ -8,10 +8,16 @@ A simple to use API library for the Spotify REST API.
 
 ## API
 
-Currently the only method available is `search` 🤷‍♂️:
-
+### search
+Run a Spotify search. Requires a `type` and `query`; `limit` defaults to `20`.
 ```js
-search: function({ type: 'artist OR album OR track', query: 'My search query', limit: 20 }, callback);
+spotify.search({ type: 'artist OR album OR track', query: 'My search query', limit: 20 }, callback);
+```
+
+### request
+Request results from any Spotify API URI
+```js
+spotify.request( 'https://api.spotify.com/v1/artists/' , callback);
 ```
 
 ## Example
@@ -26,10 +32,10 @@ var spotify = new Spotify({
 
 spotify.search({ type: 'track', query: 'All the Small Things' }, function(err, data) {
   if (err) {
-    return console.log('Error occurred: ' + err);
+    return console.error('Error occurred: ' + err);
   }
 
-console.log(data); 
+  console.log(data); 
 });
 ```
 
@@ -52,8 +58,8 @@ spotify
   .then(function(response) {
     console.log(response);
   })
-  .catch(function(err) {
-    console.log(error);
+  .catch(function(err){
+    console.error('Error occurred: ' + err);
   });
 ```
 
