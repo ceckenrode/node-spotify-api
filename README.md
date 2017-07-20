@@ -53,7 +53,7 @@ spotify
     console.log(response);
   })
   .catch(function(err) {
-    console.log(error);
+    console.log(err);
   });
 ```
 
