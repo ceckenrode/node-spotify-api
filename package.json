@@ -1,6 +1,6 @@
 {
   "name": "node-spotify-api",
-  "version": "1.0.4",
+  "version": "1.0.5",
   "description": "A simple wrapper for the spotify api",
   "repository": {
     "type": "git",
