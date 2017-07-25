@@ -63,7 +63,7 @@ class Spotify {
         !_token ||
         !_token.expires_in ||
         !_token.access_token ||
-        isTokenExpired()
+        _isTokenExpired()
       ) {
         request = _setToken().then(() => {
           opts.headers = _getTokenHeader();
