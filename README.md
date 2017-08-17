@@ -8,7 +8,7 @@ A simple to use API library for the Spotify REST API.
 
 ## API
 
-Currently there are two methods available, `search` and 'request' 🤷‍♂️:
+Currently there are two methods available, `search` and `request` 🔍
 
 ### Search
 
