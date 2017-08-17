@@ -8,13 +8,17 @@ A simple to use API library for the Spotify REST API.
 
 ## API
 
-Currently the only method available is `search` 🤷‍♂️:
+Currently there are two methods available, `search` and 'request' 🤷‍♂️:
+
+### Search
+
+`search` is the EASIEST way to find an artist, album, or track.
 
 ```js
 search: function({ type: 'artist OR album OR track', query: 'My search query', limit: 20 }, callback);
 ```
 
-## Example
+#### Example
 
 ```js
 var Spotify = require('node-spotify-api');
@@ -35,7 +39,7 @@ console.log(data);
 
 Note: The `limit` property is optional and the search will default to 20 if one is not supplied.
 
-### Usage with Promises
+#### Usage with Promises
 
 This package also optionally works with promises. Just omit the callback parameter and the search method returns a promise object containing the response:
 
@@ -54,6 +58,30 @@ spotify
   })
   .catch(function(err) {
     console.log(err);
+  });
+```
+
+### Request
+
+`request` can be used to make API requests to any Spotify endpoint you supply.
+
+#### Example
+
+```js
+var Spotify = require('node-spotify-api');
+
+var spotify = new Spotify({
+  id: <your spotify client id>,
+  secret: <your spotify client secret>
+});
+
+spotify
+  .request('https://api.spotify.com/v1/tracks/7yCPwWs66K8Ba5lFuU2bcx')
+  .then(function(data) {
+    console.log(data); 
+  })
+  .catch(function(err) {
+    console.error('Error occurred: ' + err); 
   });
 ```
 
