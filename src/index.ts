@@ -31,7 +31,7 @@ class Spotify {
         SEARCH_URI +
         search.type +
         "&q=" +
-        search.query +
+        encodeURIComponent(search.query) +
         "&limit=" +
         (search.limit || "20"),
       json: true
