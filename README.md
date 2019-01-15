@@ -93,14 +93,14 @@ Sign up for a Spotify developer account [here](https://developer.spotify.com/my-
 
 Once you're signed up, navigate to <https://developer.spotify.com/my-applications/>. You should be presented with the following page:
 
-![Applications](Images/1-Applications.png)
+![Applications](https://image.noelshack.com/fichiers/2019/03/2/1547591335-f3347c1a-50df-47ff-969e-a5246cf83927.jpeg)
 
 Click the button to "Create An App". Once you're at the next page, fill in the required fields.
 
-![Required](Images/2-Required.png)
+![Required](https://image.noelshack.com/fichiers/2019/03/2/1547591335-f3347c1a-50df-47ff-969e-a5246cf83927.jpeg)
 
 Submit the form and on the next page, you should be presented with a client id and secret.
 
-![Key](Images/3-Key.png)
+![Key](https://image.noelshack.com/fichiers/2019/03/2/1547591335-f3347c1a-50df-47ff-969e-a5246cf83927.jpeg)
 
 And you're all set!! 🎉 
