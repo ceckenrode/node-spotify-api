@@ -1,19 +1,9 @@
-import * as rp from "request-promise";
-import {
-  credentials,
-  search,
-  cb,
-  token,
-  header,
-  searchOpts,
-  tokenOpts
-} from "./types";
+const rp =  require("request-promise");
 const TOKEN_URI = "https://accounts.spotify.com/api/token";
 const SEARCH_URI = "https://api.spotify.com/v1/search?type=";
 
 class Spotify {
-  private token: token;
-  constructor(private credentials: credentials) {
+  constructor(credentials) {
     if (!credentials || !credentials.id || !credentials.secret) {
       throw new Error(
         'Could not initialize Spotify client. You must supply an object containing your Spotify client "id" and "secret".'
@@ -23,9 +13,9 @@ class Spotify {
     this.token;
   }
 
-  public search(search: search, cb?: cb) {
+  search(search, cb) {
     let request;
-    const opts: searchOpts = {
+    const opts = {
       method: "GET",
       uri:
         SEARCH_URI +
@@ -59,21 +49,21 @@ class Spotify {
 
     if (cb) {
       request
-        .then((response: any) => cb(null, response))
-        .catch((err: Error) => cb(err, null));
+        .then((response) => cb(null, response))
+        .catch((err) => cb(err, null));
     } else {
       return request;
     }
   }
 
-  public request(query: string, cb?: cb) {
+  request(query, cb) {
     if (!query || typeof query !== "string") {
       throw new Error(
         "You must pass in a Spotify API endpoint to use this method."
       );
     }
     let request;
-    const opts: searchOpts = { method: "GET", uri: query, json: true };
+    const opts = { method: "GET", uri: query, json: true };
 
     if (
       !this.token ||
@@ -93,14 +83,14 @@ class Spotify {
 
     if (cb) {
       request
-        .then((response: any) => cb(null, response))
-        .catch((err: Error) => cb(err, null));
+        .then((response) => cb(null, response))
+        .catch((err) => cb(err, null));
     } else {
       return request;
     }
   }
 
-  private isTokenExpired(): boolean {
+  isTokenExpired() {
     if (this.token) {
       if (Date.now() / 1000 >= this.token.expires_at - 300) {
         return true;
@@ -109,7 +99,7 @@ class Spotify {
     return false;
   }
 
-  private setToken(): any {
+  setToken() {
     const opts = {
       method: "POST",
       uri: TOKEN_URI,
@@ -117,7 +107,7 @@ class Spotify {
       headers: this.getCredentialHeader(),
       json: true
     };
-    return rp(opts).then((token: token) => {
+    return rp(opts).then((token) => {
       this.token = token;
       const currentTime = new Date();
       const expireTime = new Date(+currentTime);
@@ -126,7 +116,7 @@ class Spotify {
     });
   }
 
-  private getTokenHeader(): never | header {
+  getTokenHeader() {
     if (!this.token || !this.token.access_token) {
       throw new Error(
         "An error has occurred. Make sure you're using a valid client id and secret.'"
@@ -135,15 +125,15 @@ class Spotify {
     return { Authorization: "Bearer " + this.token.access_token };
   }
 
-  private getCredentialHeader(): header {
+  getCredentialHeader() {
     return {
       Authorization:
         "Basic " +
-        new Buffer(
+        Buffer.from(
           this.credentials.id + ":" + this.credentials.secret
-        ).toString("base64")
+        , "ascii").toString("base64")
     };
   }
 }
 
-export default Spotify;
+module.exports = Spotify;
