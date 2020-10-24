@@ -56,14 +56,14 @@ class Spotify {
     }
   }
 
-  request(query, cb) {
+  request(query, {callback, method = "GET"}) {
     if (!query || typeof query !== "string") {
       throw new Error(
         "You must pass in a Spotify API endpoint to use this method."
       );
     }
     let request;
-    const opts = { method: "GET", uri: query, json: true };
+    const opts = { method, uri: query, json: true };
 
     if (
       !this.token ||
@@ -81,10 +81,10 @@ class Spotify {
       request = rp(opts);
     }
 
-    if (cb) {
+    if (callback) {
       request
-        .then((response) => cb(null, response))
-        .catch((err) => cb(err, null));
+        .then((response) => callback(null, response))
+        .catch((err) => callback(err, null));
     } else {
       return request;
     }
