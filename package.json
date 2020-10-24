@@ -4,10 +4,10 @@
   "description": "A simple wrapper for the spotify api",
   "repository": {
     "type": "git",
-    "url": "https://github.com/ceckenrode/node-spotify-api.git"
+    "url": "https://github.com/totalolage/node-spotify-api.git"
   },
   "main": "index.js",
-  "author": "Christian Eckenrode <christian@develop.io>",
+  "author": "Filip Kalný <filip@kalny.net>",
   "license": "ISC",
   "dependencies": {
     "request": "^2.81.0",
